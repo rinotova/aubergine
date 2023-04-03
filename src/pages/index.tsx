@@ -2,7 +2,10 @@ import { SignInButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { api } from "~/utils/api";
+import { type RouterOutputs, api } from "~/utils/api";
+import dayjs from "dayjs";
+import relativetime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativetime);
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -25,6 +28,32 @@ const CreatePostWizard = () => {
         placeholder="Type some emojis!"
         className="grow bg-transparent outline-none"
       />
+    </div>
+  );
+};
+
+type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+
+const PostView = ({ postData }: { postData: PostWithUser }) => {
+  const { post, author } = postData;
+  return (
+    <div className="flex gap-3 border-b border-slate-400 p-4">
+      <Image
+        src={author.profileImageUrl}
+        alt="Profile image"
+        width={56}
+        height={56}
+        className="rounded-full"
+      />
+      <div className="flex flex-col">
+        <div className="flex gap-1 font-bold text-slate-300">
+          <span>{`@${author.username}`}</span>
+          <span className="font-thin">{` · ${dayjs(
+            post.createdAt
+          ).fromNow()}`}</span>
+        </div>
+        <span>{post.content}</span>
+      </div>
     </div>
   );
 };
@@ -58,10 +87,8 @@ const Home: NextPage = () => {
           </div>
 
           <div className="flex flex-col">
-            {data.map(({ post, user }) => (
-              <div key={post.id} className="border-b border-slate-400 p-8">
-                {post.content}
-              </div>
+            {data.map((postData) => (
+              <PostView key={postData.post.id} postData={postData} />
             ))}
           </div>
         </div>
