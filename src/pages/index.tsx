@@ -5,18 +5,82 @@ import Image from "next/image";
 import { type RouterOutputs, api } from "~/utils/api";
 import dayjs from "dayjs";
 import relativetime from "dayjs/plugin/relativeTime";
-import { LoadingPage } from "~/components/Spinner";
+import { LoadingPage, LoadingSpinner } from "~/components/Spinner";
+import { type FormEvent, useState } from "react";
+import { ChripSchema, type Post } from "~/types";
+import { getUsername } from "~/helpers";
+import { type EmailAddress } from "@clerk/nextjs/dist/api";
 dayjs.extend(relativetime);
 
 const CreatePostWizard = () => {
+  const [emoji, setEmoji] = useState("");
   const { user } = useUser();
+  const trpcUtils = api.useContext();
 
   if (!user) {
     return null;
   }
 
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+    onMutate: async (newPost) => {
+      // Cancel any outgoing refetches so they don't overwrite our optimistic update.
+      await trpcUtils.posts.getAll.cancel();
+
+      // Snapshot of the previous value
+      const previousPosts = trpcUtils.posts.getAll.getData();
+
+      // Optimistically update to the new value
+      trpcUtils.posts.getAll.setData(undefined, (prev) => {
+        const optimisticPost: Post = {
+          post: {
+            id: "optimisticPostId",
+            createdAt: new Date(Date.now()),
+            authorId: user.id,
+            content: newPost.content,
+          },
+          author: {
+            id: user.id,
+            profileImageUrl: user.profileImageUrl,
+            username: getUsername(
+              user.emailAddresses as EmailAddress[],
+              user.username,
+              user.firstName
+            ),
+          },
+        };
+        if (!prev) {
+          return [optimisticPost];
+        }
+        return [optimisticPost, ...prev];
+      });
+      setEmoji("");
+      return { previousTodos: previousPosts };
+    },
+    onError: (err, newPost, context) => {
+      setEmoji(newPost.content);
+      trpcUtils.posts.getAll.setData(undefined, () => context?.previousTodos);
+    },
+    onSettled: () => {
+      void trpcUtils.posts.getAll.invalidate();
+    },
+  });
+
+  const createChirp = (e: FormEvent) => {
+    e.preventDefault();
+    if (isPosting) {
+      return;
+    }
+
+    try {
+      ChripSchema.parse({ content: emoji });
+    } catch (e) {
+      return;
+    }
+    mutate({ content: emoji });
+  };
+
   return (
-    <div className="flex w-full gap-3">
+    <form className="flex w-full gap-3" onSubmit={createChirp}>
       <Image
         src={user.profileImageUrl}
         alt="Profile image"
@@ -25,11 +89,20 @@ const CreatePostWizard = () => {
         className="rounded-full"
       />
       <input
+        onChange={(e) => setEmoji(e.target.value)}
+        value={emoji}
         type="text"
         placeholder="Type some emojis!"
         className="grow bg-transparent outline-none"
+        disabled={isPosting}
       />
-    </div>
+      {emoji !== "" && !isPosting && <button type="submit">Post</button>}
+      {isPosting && (
+        <div className="flex items-center justify-center">
+          <LoadingSpinner size={20} />
+        </div>
+      )}
+    </form>
   );
 };
 

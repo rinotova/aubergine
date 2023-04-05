@@ -1,6 +1,6 @@
 import React from "react";
 
-function Spinner(props: { size?: number }) {
+export function LoadingSpinner(props: { size?: number }) {
   return (
     <div role="status">
       <svg
@@ -29,7 +29,7 @@ function Spinner(props: { size?: number }) {
 export const LoadingPage = () => {
   return (
     <div className="absolute top-0 right-0 flex h-screen w-screen items-center justify-center">
-      <Spinner size={60} />
+      <LoadingSpinner size={60} />
     </div>
   );
 };
