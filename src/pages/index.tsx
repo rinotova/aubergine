@@ -128,7 +128,7 @@ const CreatePostWizard = () => {
       <div
         ref={emojiPickerRef}
         className={
-          "js-emojiPickerWrapper absolute left-10 top-14 " +
+          "js-emojiPickerWrapper absolute top-24 left-0 right-0 mx-auto my-auto flex w-[348px] justify-center " +
           `${showEmojiPicker ? "block" : "hidden"}`
         }
       >
