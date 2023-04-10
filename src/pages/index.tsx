@@ -6,36 +6,17 @@ import { type RouterOutputs, api } from "~/utils/api";
 import dayjs from "dayjs";
 import relativetime from "dayjs/plugin/relativeTime";
 import { LoadingPage, LoadingSpinner } from "~/components/Spinner";
-import { type FormEvent, useState, useRef, useEffect } from "react";
+import { type FormEvent, useState } from "react";
 import { ChripSchema, type Post } from "~/types";
 import { getUsername } from "~/helpers";
 import { type EmailAddress } from "@clerk/nextjs/dist/api";
-import EmojiPicker, { Theme } from "emoji-picker-react";
 
 dayjs.extend(relativetime);
 
 const CreatePostWizard = () => {
   const [emoji, setEmoji] = useState("");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const emojiPickerRef = useRef<HTMLDivElement>(null);
   const { user } = useUser();
   const trpcUtils = api.useContext();
-
-  useEffect(() => {
-    const documentClickHandler = (e: MouseEvent) => {
-      if (
-        e.target &&
-        e.target instanceof HTMLElement &&
-        !e.target.closest(".js-emojiInput")
-      ) {
-        setShowEmojiPicker(!!e.target.closest(".js-emojiPickerWrapper"));
-      }
-    };
-
-    document.addEventListener("click", documentClickHandler);
-
-    return () => document.removeEventListener("click", documentClickHandler);
-  }, []);
 
   if (!user) {
     return null;
@@ -111,34 +92,16 @@ const CreatePostWizard = () => {
         />
         <input
           onChange={(e) => setEmoji(e.target.value)}
-          onFocus={() => setShowEmojiPicker(true)}
           value={emoji}
           type="text"
           placeholder="Type some emojis!"
           className="js-emojiInput grow bg-transparent outline-none"
           disabled={isPosting}
         />
-        {emoji !== "" && !isPosting && <button type="submit">Post</button>}
-        {isPosting && (
-          <div className="flex items-center justify-center">
-            <LoadingSpinner size={20} />
-          </div>
-        )}
+        <button disabled={!(emoji !== "" && !isPosting)} type="submit">
+          Post
+        </button>
       </form>
-      <div
-        ref={emojiPickerRef}
-        className={
-          "js-emojiPickerWrapper absolute top-24 left-0 right-0 mx-auto my-auto flex w-[348px] justify-center " +
-          `${showEmojiPicker ? "block" : "hidden"}`
-        }
-      >
-        <EmojiPicker
-          theme={Theme.DARK}
-          onEmojiClick={(emojiObj) =>
-            setEmoji((prevValue) => prevValue + emojiObj.emoji)
-          }
-        />
-      </div>
     </>
   );
 };
