@@ -10,3 +10,5 @@ export type Post = allTodosOutput[number];
 export const ChripSchema = object({
   content: string().emoji().min(1).max(280),
 });
+
+export type PostWithUser = RouterOutputs["posts"]["getAll"][number];
