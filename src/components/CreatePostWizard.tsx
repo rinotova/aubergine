@@ -1,5 +1,6 @@
 import Image from "next/image";
 import useCreateChirp from "~/hooks/useCreateChirp";
+import { LoadingSpinner } from "./Spinner";
 
 const CreatePostWizard = () => {
   const { user, createChirp, isPosting, emoji, setEmoji } = useCreateChirp();
@@ -26,9 +27,12 @@ const CreatePostWizard = () => {
           className="js-emojiInput grow bg-transparent outline-none"
           disabled={isPosting}
         />
-        <button disabled={!(emoji !== "" && !isPosting)} type="submit">
-          Post
-        </button>
+        {emoji !== "" && !isPosting && <button type="submit">Post</button>}
+        {isPosting && (
+          <div className="flex items-center justify-center">
+            <LoadingSpinner size={20} />
+          </div>
+        )}
       </form>
     </>
   );

@@ -8,13 +8,15 @@ import { api } from "~/utils/api";
 function useCreateChirp() {
   const { user } = useUser();
   const [emoji, setEmoji] = useState("");
+  const [isPosting, setIsPosting] = useState(false);
   const trpcUtils = api.useContext();
 
-  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+  const { mutate } = api.posts.create.useMutation({
     onMutate: async (newPost) => {
       if (!user) {
         return;
       }
+
       // Cancel any outgoing refetches so they don't overwrite our optimistic update.
       await trpcUtils.posts.getAll.cancel();
 
@@ -59,16 +61,32 @@ function useCreateChirp() {
 
   const createChirp = (e: FormEvent) => {
     e.preventDefault();
-    if (isPosting) {
-      return;
-    }
+    setIsPosting(true);
 
-    try {
-      ChripSchema.parse({ content: emoji });
-    } catch (e) {
-      return;
-    }
-    mutate({ content: emoji });
+    fetch("/api/is-rate-limited")
+      .then(
+        (response) =>
+          response.json() as unknown as {
+            isPassedDBRateLimit: boolean;
+          }
+      )
+      .then((data) => {
+        if (!data.isPassedDBRateLimit) {
+          console.log("User is rate limited");
+          return;
+        }
+        try {
+          ChripSchema.parse({ content: emoji });
+        } catch (e) {
+          return;
+        }
+
+        mutate({ content: emoji });
+      })
+      .catch(() => {
+        // do nothing;
+      })
+      .finally(() => setIsPosting(false));
   };
 
   return {
