@@ -1,6 +1,8 @@
 import { useUser } from "@clerk/nextjs";
 import { type EmailAddress } from "@clerk/nextjs/dist/api";
+import { TRPCClientError } from "@trpc/client";
 import { useState, type FormEvent } from "react";
+import { toast } from "react-hot-toast";
 import { getUsername } from "~/helpers";
 import { ChripSchema, type Post } from "~/types";
 import { api } from "~/utils/api";
@@ -8,13 +10,20 @@ import { api } from "~/utils/api";
 function useCreateChirp() {
   const { user } = useUser();
   const [emoji, setEmoji] = useState("");
-  const [isPosting, setIsPosting] = useState(false);
   const trpcUtils = api.useContext();
 
-  const { mutate } = api.posts.create.useMutation({
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onMutate: async (newPost) => {
       if (!user) {
         return;
+      }
+
+      const rateResponse = await fetch("/api/is-rate-limited");
+      const rateResponseJson = (await rateResponse.json()) as unknown as {
+        isPassedDBRateLimit: boolean;
+      };
+      if (!rateResponseJson.isPassedDBRateLimit) {
+        throw new TRPCClientError("Failed post! Please try again later.");
       }
 
       // Cancel any outgoing refetches so they don't overwrite our optimistic update.
@@ -48,11 +57,13 @@ function useCreateChirp() {
         return [optimisticPost, ...prev];
       });
       setEmoji("");
-      return { previousTodos: previousPosts };
+      return { previousPosts };
     },
     onError: (err, newPost, context) => {
+      toast.dismiss();
+      toast.error(err.message);
       setEmoji(newPost.content);
-      trpcUtils.posts.getAll.setData(undefined, () => context?.previousTodos);
+      trpcUtils.posts.getAll.setData(undefined, () => context?.previousPosts);
     },
     onSettled: () => {
       void trpcUtils.posts.getAll.invalidate();
@@ -61,32 +72,15 @@ function useCreateChirp() {
 
   const createChirp = (e: FormEvent) => {
     e.preventDefault();
-    setIsPosting(true);
+    try {
+      ChripSchema.parse({ content: emoji });
+    } catch (e) {
+      toast.dismiss();
+      toast.error("You can only post emojies.");
+      return;
+    }
 
-    fetch("/api/is-rate-limited")
-      .then(
-        (response) =>
-          response.json() as unknown as {
-            isPassedDBRateLimit: boolean;
-          }
-      )
-      .then((data) => {
-        if (!data.isPassedDBRateLimit) {
-          console.log("User is rate limited");
-          return;
-        }
-        try {
-          ChripSchema.parse({ content: emoji });
-        } catch (e) {
-          return;
-        }
-
-        mutate({ content: emoji });
-      })
-      .catch(() => {
-        // do nothing;
-      })
-      .finally(() => setIsPosting(false));
+    mutate({ content: emoji });
   };
 
   return {
