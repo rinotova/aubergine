@@ -15,5 +15,16 @@ model Post {
     createdAt DateTime @default(now())
     content   String
     authorId  String
+    replies Reply[]
     @@index([authorId])
+}
+
+model Reply {
+    id        String  @id @default(cuid()) @map("_id")
+    postId    String
+    content   String
+    authorId  String
+    createdAt DateTime @default(now())
+    post      Post  @relation(fields: [postId], references: [id])
+    @@unique([id, postId])
 }
