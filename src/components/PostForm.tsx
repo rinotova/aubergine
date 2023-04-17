@@ -6,7 +6,7 @@ import { type postFormPropType } from "~/types";
 function PostForm({ ...props }: postFormPropType) {
   const { createChirp, isPosting, emoji, setEmoji, profileImageUrl } = props;
   return (
-    <form className="flex w-full gap-3" onSubmit={createChirp}>
+    <form className="flex w-full gap-3 " onSubmit={createChirp}>
       <Image
         src={profileImageUrl}
         alt="Profile image"
