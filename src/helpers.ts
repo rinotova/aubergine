@@ -1,4 +1,5 @@
 import { type EmailAddress } from "@clerk/nextjs/dist/api";
+import { ChripSchema } from "./types";
 
 const getUsernameFromEmail = (emailAddresses: EmailAddress[]): string => {
   for (let index = 0; index < emailAddresses.length; index++) {
@@ -18,4 +19,16 @@ export const getUsername = (
   return (
     username || firstName || getUsernameFromEmail(emailAddresses) || "User"
   );
+};
+
+export const isValidEmoji = (emoji: string): boolean => {
+  try {
+    if (!/\p{Extended_Pictographic}/u.test(emoji)) {
+      throw new Error("You can only post emojies.");
+    }
+    ChripSchema.parse({ content: emoji });
+  } catch (e) {
+    return false;
+  }
+  return true;
 };

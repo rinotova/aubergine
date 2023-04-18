@@ -11,9 +11,12 @@ const ProfilePage: NextPage = () => {
   const router = useRouter();
   const id = router.query.id as string;
   const { data: postData, isLoading: postsLoading } =
-    api.posts.getPostById.useQuery({
-      postId: id,
-    });
+    api.posts.getPostById.useQuery(
+      {
+        postId: id,
+      },
+      { enabled: !!id }
+    );
   const { isSignedIn } = useUser();
 
   if (postsLoading) {
@@ -28,7 +31,7 @@ const ProfilePage: NextPage = () => {
   return (
     <div className="flex flex-col">
       <PostView postData={postData} />
-      <div className="border-b border-slate-400 p-4">
+      <div className="border-b border-slate-600 p-4">
         {isSignedIn && <CreateReplyWizard postIdReply={postId} />}
       </div>
       <RepliesFeed postId={postId} />

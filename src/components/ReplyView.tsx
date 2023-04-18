@@ -1,13 +1,13 @@
 import Image from "next/image";
-import { type PostWithUser } from "~/types";
+import { type ReplyWithUser } from "~/types";
 import dayjs from "dayjs";
 import relativetime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
 
 dayjs.extend(relativetime);
 
-const PostView = ({ postData }: { postData: PostWithUser }) => {
-  const { post, author } = postData;
+const ReplyView = ({ replyData }: { replyData: ReplyWithUser }) => {
+  const { post, author } = replyData;
   const username = `@${author.username}`;
   return (
     <div className="flex gap-3 border-b border-slate-600 p-4">
@@ -30,12 +30,9 @@ const PostView = ({ postData }: { postData: PostWithUser }) => {
           </Link>
         </div>
         <span className="break-all">{post.content}</span>
-        <div>
-          <p>Replies: {post._count.replies}</p>
-        </div>
       </div>
     </div>
   );
 };
 
-export default PostView;
+export default ReplyView;

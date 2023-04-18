@@ -30,6 +30,13 @@ export const postsRouter = createTRPCRouter({
         where: {
           id: input.postId,
         },
+        include: {
+          _count: {
+            select: {
+              replies: true,
+            },
+          },
+        },
       });
 
       if (!post) {
@@ -59,6 +66,13 @@ export const postsRouter = createTRPCRouter({
     const posts = await ctx.prisma.post.findMany({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
+      include: {
+        _count: {
+          select: {
+            replies: true,
+          },
+        },
+      },
     });
 
     const users = (

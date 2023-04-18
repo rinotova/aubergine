@@ -3,8 +3,8 @@ import { type EmailAddress } from "@clerk/nextjs/dist/api";
 import { TRPCClientError } from "@trpc/client";
 import { useState, type FormEvent } from "react";
 import { toast } from "react-hot-toast";
-import { getUsername } from "~/helpers";
-import { ChripSchema, type Reply } from "~/types";
+import { getUsername, isValidEmoji } from "~/helpers";
+import { type Reply } from "~/types";
 import { api } from "~/utils/api";
 
 function useCreateReply(postId: string) {
@@ -76,11 +76,10 @@ function useCreateReply(postId: string) {
 
   const createChirp = (e: FormEvent) => {
     e.preventDefault();
-    try {
-      ChripSchema.parse({ content: emoji });
-    } catch (e) {
+
+    if (!isValidEmoji(emoji)) {
       toast.dismiss();
-      toast.error("You can only post emojies.");
+      toast.error("You can only post emojies for a max of 280 characters.");
       return;
     }
 

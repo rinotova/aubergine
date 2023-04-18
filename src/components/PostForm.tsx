@@ -1,18 +1,19 @@
 import Image from "next/image";
 import React from "react";
 import { LoadingSpinner } from "./Spinner";
-import { type postFormPropType } from "~/types";
+import { type PostFormPropType } from "~/types";
 
-function PostForm({ ...props }: postFormPropType) {
+function PostForm({ ...props }: PostFormPropType) {
   const { createChirp, isPosting, emoji, setEmoji, profileImageUrl } = props;
   return (
     <form className="flex w-full gap-3 " onSubmit={createChirp}>
       <Image
         src={profileImageUrl}
         alt="Profile image"
-        width={56}
-        height={56}
+        width={50}
+        height={50}
         className="rounded-full"
+        priority={true}
       />
       <input
         onChange={(e) => setEmoji(e.target.value)}

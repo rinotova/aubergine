@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       <Navbar />
       <main className="flex h-screen flex-col justify-center">
-        <div className="mx-auto h-full w-full border-x border-slate-400 md:max-w-2xl">
+        <div className="mx-auto h-full w-full border-x border-slate-600 md:max-w-2xl">
           {children}
         </div>
       </main>

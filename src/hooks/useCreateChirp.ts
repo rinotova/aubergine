@@ -3,8 +3,8 @@ import { type EmailAddress } from "@clerk/nextjs/dist/api";
 import { TRPCClientError } from "@trpc/client";
 import { useState, type FormEvent } from "react";
 import { toast } from "react-hot-toast";
-import { getUsername } from "~/helpers";
-import { ChripSchema, type Post } from "~/types";
+import { getUsername, isValidEmoji } from "~/helpers";
+import { type Post } from "~/types";
 import { api } from "~/utils/api";
 
 function useCreateChirp() {
@@ -40,6 +40,9 @@ function useCreateChirp() {
             createdAt: new Date(Date.now()),
             authorId: user.id,
             content: newPost.content,
+            _count: {
+              replies: 0,
+            },
           },
           author: {
             id: user.id,
@@ -72,11 +75,10 @@ function useCreateChirp() {
 
   const createChirp = (e: FormEvent) => {
     e.preventDefault();
-    try {
-      ChripSchema.parse({ content: emoji });
-    } catch (e) {
+
+    if (!isValidEmoji(emoji)) {
       toast.dismiss();
-      toast.error("You can only post emojies.");
+      toast.error("You can only post emojies for a max of 280 characters.");
       return;
     }
 

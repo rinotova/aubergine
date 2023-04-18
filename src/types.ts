@@ -20,8 +20,9 @@ export const ReplySchema = object({
 });
 
 export type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+export type ReplyWithUser = RouterOutputs["posts"]["getRepliesForPost"][number];
 
-export type postFormPropType = {
+export type PostFormPropType = {
   createChirp: (e: FormEvent<Element>) => void;
   isPosting: boolean;
   emoji: string;

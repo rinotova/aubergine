@@ -1,6 +1,6 @@
 import { api } from "~/utils/api";
-import PostView from "./PostView";
 import { LoadingPage } from "./Spinner";
+import ReplyView from "./ReplyView";
 
 const RepliesFeed = ({ postId }: { postId: string }) => {
   const { data: postReplies, isLoading: repliesLoading } =
@@ -18,8 +18,8 @@ const RepliesFeed = ({ postId }: { postId: string }) => {
 
   return (
     <div className="flex flex-col">
-      {postReplies.map((postData) => (
-        <PostView key={postData.post.id} postData={postData} />
+      {postReplies.map((replyData) => (
+        <ReplyView key={replyData.post.id} replyData={replyData} />
       ))}
     </div>
   );

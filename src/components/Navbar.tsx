@@ -17,7 +17,7 @@ const Navbar = () => {
   }
 
   return (
-    <Disclosure as="nav" className="mb-6 h-16 bg-gray-800">
+    <Disclosure as="nav" className=" h-16 bg-gray-800">
       {() => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -26,15 +26,7 @@ const Navbar = () => {
                 <Link href={"/"}>
                   <div className="flex flex-shrink-0 items-center">
                     <Image
-                      className="block w-auto lg:hidden"
-                      src="/static/images/favicon32.png"
-                      alt="Aubergine"
-                      height={32}
-                      width={32}
-                      priority={true}
-                    />
-                    <Image
-                      className="hidden h-8 w-auto lg:block"
+                      className="h-8 w-auto"
                       src="/static/images/favicon32.png"
                       alt="Aubergine"
                       height={32}
@@ -61,6 +53,7 @@ const Navbar = () => {
                             alt="Avatar"
                             width={32}
                             height={32}
+                            priority={true}
                           />
                         )}
                       </Menu.Button>
