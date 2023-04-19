@@ -1,12 +1,19 @@
 import Image from "next/image";
-import { type PostWithUser } from "~/types";
+import { ReplyWithUser, type PostWithUser } from "~/types";
 import dayjs from "dayjs";
 import relativetime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
+import { api } from "~/utils/api";
+import { LoadingSpinner } from "./Spinner";
 
 dayjs.extend(relativetime);
 
-const PostView = ({ postData }: { postData: PostWithUser }) => {
+const PostView = ({ postData }: { postData: PostWithUser | ReplyWithUser }) => {
+  const { data: postReplies, isLoading: repliesLoading } =
+    api.posts.getRepliesForPost.useQuery({
+      postId: postData.post.id,
+    });
+
   const { post, author } = postData;
   const username = `@${author.username}`;
   return (
@@ -31,7 +38,8 @@ const PostView = ({ postData }: { postData: PostWithUser }) => {
         </div>
         <span className="break-all">{post.content}</span>
         <div>
-          <p>Replies: {post._count.replies}</p>
+          {repliesLoading && <LoadingSpinner />}
+          {!repliesLoading && <p>Replies: {postReplies?.length}</p>}
         </div>
       </div>
     </div>

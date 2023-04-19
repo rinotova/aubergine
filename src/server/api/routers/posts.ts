@@ -30,13 +30,6 @@ export const postsRouter = createTRPCRouter({
         where: {
           id: input.postId,
         },
-        include: {
-          _count: {
-            select: {
-              replies: true,
-            },
-          },
-        },
       });
 
       if (!post) {
@@ -64,15 +57,11 @@ export const postsRouter = createTRPCRouter({
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
+      where: {
+        isReply: false,
+      },
       take: 100,
       orderBy: [{ createdAt: "desc" }],
-      include: {
-        _count: {
-          select: {
-            replies: true,
-          },
-        },
-      },
     });
 
     const users = (
@@ -118,17 +107,14 @@ export const postsRouter = createTRPCRouter({
     .input(ReplySchema)
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx;
-      const { content, postId } = input;
+      const { content } = input;
 
-      const reply = await ctx.prisma.reply.create({
+      const reply = await ctx.prisma.post.create({
         data: {
-          post: {
-            connect: {
-              id: postId,
-            },
-          },
+          isReply: true,
           authorId: userId,
           content: content,
+          replyPostId: input.postId,
         },
       });
 
@@ -141,22 +127,24 @@ export const postsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const replies = await ctx.prisma.reply.findMany({
+      const posts = await ctx.prisma.post.findMany({
         where: {
-          postId: input.postId,
+          replyPostId: input.postId,
         },
         take: 100,
         orderBy: [{ createdAt: "desc" }],
       });
 
+      console.log(posts);
+
       const users = (
         await clerkClient.users.getUserList({
-          userId: replies.map((post) => post.authorId),
+          userId: posts.map((post) => post.authorId),
           limit: 100,
         })
       ).map(filterUserForClient);
 
-      return replies.map((post) => {
+      return posts.map((post) => {
         const author = users.find((user) => user.id === post.authorId);
 
         if (!author) {

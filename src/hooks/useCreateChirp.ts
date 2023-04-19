@@ -40,9 +40,8 @@ function useCreateChirp() {
             createdAt: new Date(Date.now()),
             authorId: user.id,
             content: newPost.content,
-            _count: {
-              replies: 0,
-            },
+            isReply: false,
+            replyPostId: null,
           },
           author: {
             id: user.id,

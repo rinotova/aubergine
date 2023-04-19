@@ -40,7 +40,8 @@ function useCreateReply(postId: string) {
             createdAt: new Date(Date.now()),
             authorId: user.id,
             content: newPost.content,
-            postId,
+            replyPostId: postId,
+            isReply: true,
           },
           author: {
             id: user.id,
