@@ -135,8 +135,6 @@ export const postsRouter = createTRPCRouter({
         orderBy: [{ createdAt: "desc" }],
       });
 
-      console.log(posts);
-
       const users = (
         await clerkClient.users.getUserList({
           userId: posts.map((post) => post.authorId),
@@ -161,6 +159,72 @@ export const postsRouter = createTRPCRouter({
             username: author.username,
           },
         };
+      });
+    }),
+  getLikesForPost: publicProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const currentUserId = ctx.userId;
+      const posts = await ctx.prisma.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+        include: {
+          likes: true,
+        },
+      });
+
+      const likeBySelf = posts?.likes.filter(
+        (like) => like.userId === currentUserId
+      );
+      const isLikedBySelf = likeBySelf && likeBySelf.length > 0;
+
+      return { likesCount: posts?.likes.length || 0, isLikedBySelf };
+    }),
+  like: privateProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { postId } = input;
+      const authorId = ctx.userId;
+
+      return prisma.like.create({
+        data: {
+          userId: authorId,
+          post: {
+            connect: {
+              id: postId,
+            },
+          },
+        },
+      });
+    }),
+  unlike: privateProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { postId } = input;
+      const authorId = ctx.userId;
+
+      return prisma.like.delete({
+        where: {
+          postId_userId: {
+            postId,
+            userId: authorId,
+          },
+        },
       });
     }),
 });

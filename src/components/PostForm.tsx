@@ -23,7 +23,18 @@ function PostForm({ ...props }: PostFormPropType) {
         className="js-emojiInput grow bg-transparent outline-none"
         disabled={isPosting}
       />
-      {emoji !== "" && !isPosting && <button type="submit">Post</button>}
+      {emoji !== "" && !isPosting && (
+        <button type="submit">
+          <Image
+            className="h-8 w-auto rounded border border-violet-400 p-1 active:border-white"
+            src="/static/images/aubergine.png"
+            alt="Aubergine"
+            height={32}
+            width={32}
+            priority={true}
+          />
+        </button>
+      )}
       {isPosting && (
         <div className="flex items-center justify-center">
           <LoadingSpinner size={20} />

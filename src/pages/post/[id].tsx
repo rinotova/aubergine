@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import CreateReplyWizard from "~/components/CreateReplyWizard";
@@ -7,7 +7,7 @@ import RepliesFeed from "~/components/RepliesFeed";
 import { LoadingPage } from "~/components/Spinner";
 import { api } from "~/utils/api";
 
-const ProfilePage: NextPage = () => {
+const PostDetailPage: NextPage = () => {
   const router = useRouter();
   const id = router.query.id as string;
   const { data: postData, isLoading: postsLoading } =
@@ -30,13 +30,22 @@ const ProfilePage: NextPage = () => {
 
   return (
     <div className="flex flex-col">
-      <PostView postData={postData} />
+      <PostView postData={postData} isPostDetailPage={true} />
       <div className="border-b border-slate-600 p-4">
         {isSignedIn && <CreateReplyWizard postIdReply={postId} />}
+        {!isSignedIn && (
+          <div className="flex justify-center">
+            <SignInButton mode="modal">
+              <button className="rounded border border-violet-400 p-2">
+                Sign in to reply
+              </button>
+            </SignInButton>
+          </div>
+        )}
       </div>
       <RepliesFeed postId={postId} />
     </div>
   );
 };
 
-export default ProfilePage;
+export default PostDetailPage;

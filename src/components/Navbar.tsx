@@ -27,7 +27,7 @@ const Navbar = () => {
                   <div className="flex flex-shrink-0 items-center">
                     <Image
                       className="h-8 w-auto"
-                      src="/static/images/favicon32.png"
+                      src="/static/images/aubergine.png"
                       alt="Aubergine"
                       height={32}
                       width={32}
@@ -35,9 +35,6 @@ const Navbar = () => {
                     />
                   </div>
                 </Link>
-                <div className="ml-3 mt-3 hidden h-8 w-auto text-xl font-semibold text-white lg:block">
-                  <h1>The Aubergine</h1>
-                </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {/* Profile dropdown */}

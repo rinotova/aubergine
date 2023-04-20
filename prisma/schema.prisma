@@ -17,5 +17,16 @@ model Post {
     authorId  String
     isReply   Boolean @default(false)
     replyPostId   String?
+    likes Like[]
     @@index([authorId])
+}
+
+model Like {
+  id            String    @id @default(cuid()) @map("_id")
+  post Post @relation(fields: [postId], references: [id])
+  postId String
+  userId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([postId, userId])
 }
