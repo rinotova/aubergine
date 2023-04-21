@@ -27,7 +27,7 @@ function PostForm({ ...props }: PostFormPropType) {
         <button type="submit">
           <Image
             className="h-8 w-auto rounded border border-violet-400 p-1 active:border-white"
-            src="/static/images/aubergine.png"
+            src="/aubergine.png"
             alt="Aubergine"
             height={32}
             width={32}

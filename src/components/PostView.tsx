@@ -88,21 +88,23 @@ const PostView = ({
       />
       <div className="flex w-full flex-col">
         <div className="flex gap-1 font-bold text-slate-300">
-          <Link href={`/${username}`}>
+          <a href={`/${username}`}>
             <span>{username}</span>
-          </Link>
-          <Link href={`/post/${post.id}`}>
+          </a>
+          <a href={`/post/${post.id}`}>
             <span className="font-thin">{` · ${dayjs(
               post.createdAt
             ).fromNow()}`}</span>
-          </Link>
+          </a>
         </div>
-        <span className="mt-2 break-all text-3xl">{post.content}</span>
-        <div className="mt-3 grid grid-flow-col grid-rows-1 justify-end gap-7 text-sm">
+        <span className="mt-3 break-all text-2xl">{post.content}</span>
+
+        <div className="mt-3 grid h-9 grid-flow-col grid-rows-1 justify-end gap-7 text-sm">
           {repliesLoading && <LoadingSpinner />}
           {!repliesLoading && (
             <div className="flex w-10">
               <button
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={() => {
                   if (!isPostDetailPage) {
                     void router.push(`/post/${post.id}`);

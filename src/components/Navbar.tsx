@@ -30,7 +30,7 @@ const Navbar = () => {
                   <div className="flex flex-shrink-0 items-center">
                     <Image
                       className="h-8 w-auto"
-                      src="/static/images/aubergine.png"
+                      src="/aubergine.png"
                       alt="Aubergine"
                       height={32}
                       width={32}
