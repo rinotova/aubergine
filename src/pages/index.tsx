@@ -1,10 +1,10 @@
 import { SignInButton, useUser } from "@clerk/nextjs";
-import { type NextPage } from "next";
+import Link from "next/link";
 import CreatePostWizard from "~/components/CreatePostWizard";
 import Feed from "~/components/GeneralFeed";
 import { api } from "~/utils/api";
 
-const Home: NextPage = () => {
+const Home = () => {
   const { isLoaded: userLoaded, isSignedIn } = useUser();
 
   // Start fetching asap
@@ -15,10 +15,10 @@ const Home: NextPage = () => {
   }
   return (
     <>
-      <div className="border-b border-t-4 border-slate-600 border-t-violet-400 p-4">
+      <div className="border-b border-slate-600  p-4">
         {!isSignedIn && (
           <div className="flex justify-center">
-            <SignInButton mode="modal">
+            <SignInButton>
               <button className="rounded border border-violet-400 p-2">
                 Sign in to post
               </button>

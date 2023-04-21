@@ -9,7 +9,7 @@ function Message({ hasMessages }: { hasMessages: boolean }) {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className={`h-6 w-6  hover:text-violet-400 ${
+        className={`h-6 w-6  hover:fill-violet-400 hover:text-violet-400 ${
           hasMessages ? "text-violet-400" : ""
         }`}
       >

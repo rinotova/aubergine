@@ -17,7 +17,7 @@ export const getUsername = (
   firstName: string | null
 ): string => {
   return (
-    username || firstName || getUsernameFromEmail(emailAddresses) || "User"
+    getUsernameFromEmail(emailAddresses) || username || firstName || "User"
   );
 };
 

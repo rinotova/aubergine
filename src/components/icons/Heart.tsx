@@ -1,6 +1,12 @@
 import React from "react";
 
-function Heart({ isFilled }: { isFilled: boolean }) {
+function Heart({
+  isFilled = false,
+  hasLikes,
+}: {
+  isFilled?: boolean;
+  hasLikes: boolean;
+}) {
   return (
     <div className="h-8 w-8">
       <svg
@@ -10,7 +16,7 @@ function Heart({ isFilled }: { isFilled: boolean }) {
         stroke="currentColor"
         className={`h-6 w-6 hover:fill-violet-400 hover:text-violet-400 ${
           isFilled ? "fill-violet-400 text-violet-400" : ""
-        }`}
+        } ${hasLikes ? "text-violet-400" : ""}`}
       >
         <path
           strokeLinecap="round"

@@ -57,7 +57,7 @@ const PostView = ({
   });
 
   const { post, author } = postData;
-  const username = `@${author.username}`;
+  const username = `${author.username}`;
 
   function likeHandler() {
     if (isLiking) {
@@ -97,7 +97,7 @@ const PostView = ({
             ).fromNow()}`}</span>
           </Link>
         </div>
-        <span className="break-all">{post.content}</span>
+        <span className="mt-2 break-all text-3xl">{post.content}</span>
         <div className="mt-3 grid grid-flow-col grid-rows-1 justify-end gap-7 text-sm">
           {repliesLoading && <LoadingSpinner />}
           {!repliesLoading && (
@@ -105,7 +105,6 @@ const PostView = ({
               <button
                 onClick={() => {
                   if (!isPostDetailPage) {
-                    console.log(isPostDetailPage);
                     void router.push(`/post/${post.id}`);
                   }
                 }}
@@ -130,9 +129,9 @@ const PostView = ({
                   }
                 >
                   {postLikes?.isLikedBySelf ? (
-                    <Heart isFilled={hasLikes} />
+                    <Heart isFilled={true} hasLikes={true} />
                   ) : (
-                    <Heart isFilled={hasLikes} />
+                    <Heart hasLikes={hasLikes} />
                   )}
                 </button>
 
