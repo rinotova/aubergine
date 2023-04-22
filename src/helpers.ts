@@ -1,4 +1,4 @@
-import { type EmailAddress } from "@clerk/nextjs/dist/api";
+import { User, type EmailAddress } from "@clerk/nextjs/dist/api";
 import { ChripSchema } from "./types";
 
 const getUsernameFromEmail = (emailAddresses: EmailAddress[]): string => {
@@ -19,6 +19,14 @@ export const getUsername = (
   return (
     getUsernameFromEmail(emailAddresses) || username || firstName || "User"
   );
+};
+
+export const filterUserForClient = (user: User) => {
+  return {
+    id: user.id,
+    username: getUsername(user.emailAddresses, user.username, user.firstName),
+    profileImageUrl: user.profileImageUrl,
+  };
 };
 
 export const isValidEmoji = (emoji: string): boolean => {

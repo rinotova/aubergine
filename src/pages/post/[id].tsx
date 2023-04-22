@@ -38,7 +38,7 @@ const PostDetailPage: NextPage<{ id: string }> = ({ id }) => {
           {isSignedIn && <CreateReplyWizard postIdReply={postId} />}
           {!isSignedIn && (
             <div className="flex justify-center">
-              <SignInButton>
+              <SignInButton mode="modal">
                 <button className="rounded border border-violet-400 p-2">
                   Sign in to reply
                 </button>

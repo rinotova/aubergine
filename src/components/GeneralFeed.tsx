@@ -2,7 +2,7 @@ import { api } from "~/utils/api";
 import PostView from "./PostView";
 import { LoadingPage } from "./Spinner";
 
-const Feed = () => {
+const GeneralFeed = () => {
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
 
   if (postsLoading) {
@@ -22,4 +22,4 @@ const Feed = () => {
   );
 };
 
-export default Feed;
+export default GeneralFeed;

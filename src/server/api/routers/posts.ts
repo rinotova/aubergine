@@ -1,22 +1,13 @@
-import type { User } from "@clerk/nextjs/dist/api";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { getUsername } from "~/helpers";
+import { filterUserForClient } from "~/helpers";
 import {
   createTRPCRouter,
   privateProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 import { ChripSchema, ReplySchema } from "~/types";
-
-const filterUserForClient = (user: User) => {
-  return {
-    id: user.id,
-    username: getUsername(user.emailAddresses, user.username, user.firstName),
-    profileImageUrl: user.profileImageUrl,
-  };
-};
 
 export const postsRouter = createTRPCRouter({
   getPostById: publicProcedure
@@ -225,6 +216,42 @@ export const postsRouter = createTRPCRouter({
             userId: authorId,
           },
         },
+      });
+    }),
+  getPostsByUserId: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { userId } = input;
+
+      const author = await clerkClient.users.getUser(userId);
+
+      if (!author) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Author for post not found",
+        });
+      }
+
+      const posts = await prisma.post.findMany({
+        where: {
+          authorId: userId,
+        },
+        take: 100,
+        orderBy: [{ createdAt: "desc" }],
+      });
+
+      return posts.map((post) => {
+        return {
+          post,
+          author: {
+            ...filterUserForClient(author),
+          },
+        };
       });
     }),
 });

@@ -26,11 +26,11 @@ function PostForm({ ...props }: PostFormPropType) {
       {emoji !== "" && !isPosting && (
         <button type="submit">
           <Image
-            className="h-8 w-auto rounded border border-violet-400 p-1 active:border-white"
+            className="h-10 w-auto rounded border border-violet-400 p-2 active:border-white"
             src="/aubergine.png"
             alt="Aubergine"
-            height={32}
-            width={32}
+            height={40}
+            width={40}
             priority={true}
           />
         </button>

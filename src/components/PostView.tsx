@@ -2,7 +2,6 @@ import Image from "next/image";
 import { type ReplyWithUser, type PostWithUser } from "~/types";
 import dayjs from "dayjs";
 import relativetime from "dayjs/plugin/relativeTime";
-import Link from "next/link";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "./Spinner";
 import Heart from "./icons/Heart";
@@ -13,14 +12,10 @@ import { useRouter } from "next/router";
 
 dayjs.extend(relativetime);
 
-const PostView = ({
-  postData,
-  isPostDetailPage,
-}: {
-  postData: PostWithUser | ReplyWithUser;
-  isPostDetailPage?: boolean;
-}) => {
+const PostView = ({ postData }: { postData: PostWithUser | ReplyWithUser }) => {
   const router = useRouter();
+  console.log(router);
+  const isPostDetailPage = router.pathname.includes("/post/");
   const [isLiking, setIsLiking] = useState(false);
   const trpcUtils = api.useContext();
 
@@ -57,7 +52,7 @@ const PostView = ({
   });
 
   const { post, author } = postData;
-  const username = `${author.username}`;
+  const username = `@${author.username}`;
 
   function likeHandler() {
     if (isLiking) {
@@ -103,18 +98,19 @@ const PostView = ({
           {repliesLoading && <LoadingSpinner />}
           {!repliesLoading && (
             <div className="flex w-10">
-              <button
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onClick={() => {
-                  if (!isPostDetailPage) {
-                    void router.push(`/post/${post.id}`);
-                  }
-                }}
-              >
-                <Message
-                  hasMessages={!!(postReplies && postReplies.length > 0)}
-                />
-              </button>
+              {isPostDetailPage ? (
+                <span>
+                  <Message
+                    hasMessages={!!(postReplies && postReplies.length > 0)}
+                  />
+                </span>
+              ) : (
+                <a href={`/post/${post.id}`}>
+                  <Message
+                    hasMessages={!!(postReplies && postReplies.length > 0)}
+                  />
+                </a>
+              )}
 
               <span>{postReplies?.length}</span>
             </div>

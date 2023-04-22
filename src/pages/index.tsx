@@ -1,7 +1,6 @@
 import { SignInButton, useUser } from "@clerk/nextjs";
-import Link from "next/link";
 import CreatePostWizard from "~/components/CreatePostWizard";
-import Feed from "~/components/GeneralFeed";
+import GeneralFeed from "~/components/GeneralFeed";
 import { api } from "~/utils/api";
 
 const Home = () => {
@@ -18,7 +17,7 @@ const Home = () => {
       <div className="border-b border-slate-600  p-4">
         {!isSignedIn && (
           <div className="flex justify-center">
-            <SignInButton>
+            <SignInButton mode="modal">
               <button className="rounded border border-violet-400 p-2">
                 Sign in to post
               </button>
@@ -27,7 +26,7 @@ const Home = () => {
         )}
         {isSignedIn && <CreatePostWizard />}
       </div>
-      <Feed />
+      <GeneralFeed />
     </>
   );
 };
