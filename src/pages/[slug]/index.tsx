@@ -5,6 +5,8 @@ import Image from "next/image";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { LoadingPage } from "~/components/Spinner";
 import ProfileFeed from "~/components/ProfileFeed";
+import { clerkClient } from "@clerk/nextjs/server";
+import { type User } from "@clerk/nextjs/dist/api";
 
 const ProfilePage: NextPage<{ userEmail: string }> = ({ userEmail }) => {
   const { data: currentUser } = api.profile.getUserByEmail.useQuery({
@@ -50,19 +52,43 @@ const ProfilePage: NextPage<{ userEmail: string }> = ({ userEmail }) => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateSSGHelper();
 
+  const getUserEmail = (user: User, username: string): string | undefined => {
+    const emailAddresses = user.emailAddresses;
+    const theEmail = emailAddresses.find((emailAddressObj) => {
+      const emailFromUsername = emailAddressObj.emailAddress.split("@")[0];
+      if (emailFromUsername === username) {
+        return emailFromUsername;
+      }
+      return "";
+    });
+    return theEmail?.emailAddress;
+  };
+
   const slug = context.params?.slug;
 
   if (typeof slug !== "string") throw new Error("no slug");
 
-  const userEmail = slug.replace("@", "") + "@gmail.com";
-  console.log(userEmail);
+  const username = slug.replace("@", "");
+  const users = await clerkClient.users.getUserList();
 
-  await ssg.profile.getUserByEmail.prefetch({ userEmail });
+  let theFinalEmail;
+  users.find((user) => {
+    const theEmail = getUserEmail(user, username);
+    if (theEmail) {
+      theFinalEmail = theEmail;
+    }
+  });
+
+  if (!theFinalEmail) {
+    throw new Error("no user");
+  }
+
+  await ssg.profile.getUserByEmail.prefetch({ userEmail: theFinalEmail });
 
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      userEmail,
+      userEmail: theFinalEmail,
     },
   };
 };
