@@ -1,6 +1,6 @@
 ## Demo
 
-[Aubergine](https://business-card-generator-iota.vercel.app/)
+[Aubergine](https://aubergine-rinotova.vercel.app/)
 
 # Aubergine - emojies only twitter
 
