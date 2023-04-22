@@ -14,7 +14,6 @@ dayjs.extend(relativetime);
 
 const PostView = ({ postData }: { postData: PostWithUser | ReplyWithUser }) => {
   const router = useRouter();
-  console.log(router);
   const isPostDetailPage = router.pathname.includes("/post/");
   const [isLiking, setIsLiking] = useState(false);
   const trpcUtils = api.useContext();
