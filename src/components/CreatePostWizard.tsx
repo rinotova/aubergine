@@ -1,15 +1,16 @@
-import useCreateChirp from "~/hooks/useCreateChirp";
+import useCreateAubergine from "~/hooks/useCreateAubergine";
 import PostForm from "./PostForm";
 
 const CreatePostWizard = () => {
-  const { user, createChirp, isPosting, emoji, setEmoji } = useCreateChirp();
+  const { user, createAubergine, isPosting, emoji, setEmoji } =
+    useCreateAubergine();
 
   if (!user) {
     return null;
   }
 
   const postFormProps = {
-    createChirp,
+    createAubergine,
     isPosting,
     emoji,
     setEmoji,

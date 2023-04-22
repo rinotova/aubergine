@@ -75,7 +75,7 @@ function useCreateReply(postId: string) {
     },
   });
 
-  const createChirp = (e: FormEvent) => {
+  const createAubergine = (e: FormEvent) => {
     e.preventDefault();
 
     if (!isValidEmoji(emoji)) {
@@ -89,7 +89,7 @@ function useCreateReply(postId: string) {
 
   return {
     user,
-    createChirp,
+    createAubergine,
     isPosting,
     emoji,
     setEmoji,

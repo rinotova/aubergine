@@ -2,7 +2,7 @@ import PostForm from "./PostForm";
 import useCreateReply from "~/hooks/useCreateReply";
 
 const CreateReplyWizard = ({ postIdReply }: { postIdReply: string }) => {
-  const { user, createChirp, isPosting, emoji, setEmoji } =
+  const { user, createAubergine, isPosting, emoji, setEmoji } =
     useCreateReply(postIdReply);
 
   if (!user) {
@@ -10,7 +10,7 @@ const CreateReplyWizard = ({ postIdReply }: { postIdReply: string }) => {
   }
 
   const postFormProps = {
-    createChirp,
+    createAubergine,
     isPosting,
     emoji,
     setEmoji,

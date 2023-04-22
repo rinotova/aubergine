@@ -23,7 +23,7 @@ export type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 export type ReplyWithUser = RouterOutputs["posts"]["getRepliesForPost"][number];
 
 export type PostFormPropType = {
-  createChirp: (e: FormEvent<Element>) => void;
+  createAubergine: (e: FormEvent<Element>) => void;
   isPosting: boolean;
   emoji: string;
   setEmoji: Dispatch<SetStateAction<string>>;

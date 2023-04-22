@@ -4,9 +4,10 @@ import { LoadingSpinner } from "./Spinner";
 import { type PostFormPropType } from "~/types";
 
 function PostForm({ ...props }: PostFormPropType) {
-  const { createChirp, isPosting, emoji, setEmoji, profileImageUrl } = props;
+  const { createAubergine, isPosting, emoji, setEmoji, profileImageUrl } =
+    props;
   return (
-    <form className="flex w-full gap-3 " onSubmit={createChirp}>
+    <form className="flex w-full gap-3 " onSubmit={createAubergine}>
       <Image
         src={profileImageUrl}
         alt="Profile image"

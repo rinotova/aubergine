@@ -7,7 +7,7 @@ import { getUsername, isValidEmoji } from "~/helpers";
 import { type Post } from "~/types";
 import { api } from "~/utils/api";
 
-function useCreateChirp() {
+function useCreateAubergine() {
   const { user } = useUser();
   const [emoji, setEmoji] = useState("");
   const trpcUtils = api.useContext();
@@ -72,7 +72,7 @@ function useCreateChirp() {
     },
   });
 
-  const createChirp = (e: FormEvent) => {
+  const createAubergine = (e: FormEvent) => {
     e.preventDefault();
 
     if (!isValidEmoji(emoji)) {
@@ -86,11 +86,11 @@ function useCreateChirp() {
 
   return {
     user,
-    createChirp,
+    createAubergine,
     isPosting,
     emoji,
     setEmoji,
   };
 }
 
-export default useCreateChirp;
+export default useCreateAubergine;
